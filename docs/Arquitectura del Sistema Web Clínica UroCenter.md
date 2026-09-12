@@ -61,10 +61,10 @@ La implementación utilizará las siguientes tecnologías:
 | Lenguaje | PHP |
 | Frontend | Blade |
 | UI | Bootstrap 5 |
-| JavaScript | JavaScript / jQuery |
+| JavaScript | JavaScript nativo (ES6+), sin jQuery |
 | Build Tool | Vite |
 | Base de datos | MySQL 8 |
-| Autenticación | Laravel Jetstream |
+| Autenticación | Autenticación propia (AuthController) con RBAC dinámico |
 | ORM | Eloquent |
 | Control de versiones | Git |
 | Editor | Visual Studio Code |
@@ -73,13 +73,14 @@ La implementación utilizará las siguientes tecnologías:
 
 El proyecto **NO utilizará Livewire**.
 
+Tampoco utilizará **jQuery**.
+
 La interacción dinámica del sistema se desarrollará mediante:
 
 - Blade
 - Bootstrap 5
-- JavaScript
-- jQuery
-- AJAX cuando sea necesario
+- JavaScript nativo (ES6+)
+- Peticiones `fetch` / AJAX cuando sea necesario
 
 ---
 
@@ -911,7 +912,7 @@ ADMIN
 
 # 33. Usuarios
 
-Los usuarios del sistema tendrán acceso mediante autenticación de Laravel Jetstream.
+Los usuarios del sistema tendrán acceso mediante la **autenticación propia** del sistema (`AuthController` + middleware `auth`), integrada con el RBAC dinámico.
 
 Conceptualmente:
 

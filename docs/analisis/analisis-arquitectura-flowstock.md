@@ -737,7 +737,7 @@ erDiagram
 - **Destructivo**: `SET FOREIGN_KEY_CHECKS=0` → `DB::table('menu')->truncate()` → `SET FOREIGN_KEY_CHECKS=1`.
 - Inserta con `'created_by' => 1` (asume que el usuario 1 existe).
 - Estructura sembrada: bloque `PRINCIPAL` (Dashboard), `SISTEMA` (Configuración con 8 submenús: Empresa, Menus, Perfiles, Usuarios, Acciones/Permisos, Parámetros, Terminales, **Series Numeración** con `enlace` vacío), y los bloques de catálogo/operaciones/análisis ya previstos.
-- Iconos `solar:*` (dependen de `iconify-icon`).
+- Iconos `solar:*` (dependen de `iconify-icon`). **En UroCenter se adopta Tabler (`ti ti-*`), sin `iconify`.**
 
 ### 13.3 `UbigeoPeruSeeder`
 
@@ -805,8 +805,8 @@ POST <urlBase>/{id}/toggle     → activar/desactivar
 |---|---|
 | Layout | Estructura de Dreams EMR (`.main-wrapper`, `.page-wrapper`, `.content`) en lugar de la de Silvar |
 | Sidebar | Estructura `.sidebar-menu` de Dreams EMR alimentada por `usuario_menu_tree` |
-| Iconos | Tabler (`ti ti-*`) — decisión pendiente §12.2 del doc del template |
-| Tablas | `datatable-vanilla.js` de Dreams EMR (recomendado) alimentado por el mismo endpoint `getData` |
+| Iconos | **Tabler** (`ti ti-*`) — adoptado: sin `iconify`, `menu.icono` guarda `ti ti-*` |
+| Tablas | `datatable-vanilla.js` de Dreams EMR **(adoptado)** alimentado por el mismo endpoint `getData` |
 | Confirmaciones | SweetAlert2 (el tema ya lo incluye) |
 | Fetch | Se mantiene el patrón de FlowStock (JS nativo + `X-CSRF-TOKEN`) |
 | `initDataTable()` | **Centralizar** en `public/assets/js/urocenter.js` en lugar de repetirlo por vista (§16 D3) |
@@ -865,7 +865,7 @@ POST <urlBase>/{id}/toggle     → activar/desactivar
 | **D12** | Recarga de sesión RBAC en cada request (~4–5 queries) | Coste por petición | Ver §9.5 (opción A) |
 | **D13** | Sin tests (solo scaffold en `tests/`) | Refactors peligrosos | Cubrir: login, 403 por permiso, menú por perfil, CRUD base |
 | **D14** | Credenciales demo en el seeder (`test@example.com` / `shush`) | Riesgo de seguridad | Seeder de admin leyendo variables de entorno o comando `artisan` |
-| **D15** | Iconos `solar:*` guardados en `menu.icono` (dependen de `iconify`) | Acoplamiento BD↔librería de iconos | Decidir Tabler vs iconify **antes** de sembrar el menú |
+| **D15** | Iconos `solar:*` guardados en `menu.icono` (dependen de `iconify`) | Acoplamiento BD↔librería de iconos | **Resuelto**: UroCenter adopta Tabler (`ti ti-*`); al sembrar el menú se guardan valores Tabler y no se carga `iconify` |
 | **D16** | Vite + Tailwind configurados pero sin uso real | Confusión y peso | En UroCenter: Vite sin Tailwind, solo JS/CSS propio |
 | **D17** | `PersonalRequest` **no se usa** (el controlador valida con `Request` inline); `Pais/Departamento/Provincia/Distrito/Usuario` validan solo en `store()`, no en `update()` | Código muerto y validación inconsistente entre crear y editar | Un Form Request por entidad, usado en `store()` **y** `update()` |
 

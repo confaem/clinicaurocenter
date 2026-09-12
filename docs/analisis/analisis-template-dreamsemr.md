@@ -243,7 +243,7 @@ Estructura Blade equivalente por nivel:
 - La clase `active` se calcula con `request()->routeIs($enlace)`.
 - La expansión del submenú activo se resuelve marcando `active` en el ancestro o con el JS del tema.
 
-> **Decisión pendiente (ver §12):** iconos Tabler directos (`<i class="ti ti-x">`) vs mantener `iconify` (que soporta `solar:*` y `tabler:*`). Elegir antes de sembrar el `MenuSeeder` de UroCenter, porque define el valor guardado en `menu.icono`.
+> **Decisiones adoptadas (ver §12):** iconos **Tabler directos** (`<i class="ti ti-x">`), sin `iconify`; y **librería de tablas del tema** (`datatable-vanilla.js`). Al sembrar el `MenuSeeder` de UroCenter, `menu.icono` guardará valores `ti ti-*`.
 
 ---
 
@@ -505,21 +505,27 @@ resources/views/
 | R11 | **Selector de idioma decorativo** | Confunde (no traduce nada) | Eliminar o cablear a `APP_LOCALE` |
 | R12 | **`theme-script.js` en el head** depende de atributos en `<html>` | Si se elimina, se pierde dark mode y se produce FOUC | Conservar el script y los atributos `data-*` en el layout |
 
-### 12.1 Decisión pendiente — librería de tablas
+### 12.1 Decisión adoptada — librería de tablas
+
+> **ADOPTADO (2026-09-12): Opción A — `datatable-vanilla.js` de Dreams EMR.**
+> El backend mantiene el contrato de FlowStock (`GET …/data` → `{ data, can }`), por lo que la decisión es solo de renderizado.
+> Detalle útil: el CSS `assets/plugins/datatables/css/dataTables.bootstrap5.min.css` **sí se usa** (el renderizador vanilla reproduce el mismo DOM y las mismas clases), mientras que `assets/plugins/datatables/js/jquery.dataTables.min.js` —que viene incluido en el paquete— **no se carga**.
 
 | Opción | Ventajas | Desventajas |
 |---|---|---|
-| **A. `datatable-vanilla.js` de Dreams EMR** (recomendada) | Coherencia visual total (el CSS del tema ya espera su DOM), sin dependencia extra, sin jQuery | Menos features (filtro/sort/paginación); editable y simple de extender |
+| **A. `datatable-vanilla.js` de Dreams EMR** *(adoptada)* | Coherencia visual total (el CSS del tema ya espera su DOM), sin dependencia extra, sin jQuery | Menos features (filtro/sort/paginación); editable y simple de extender |
 | B. `vanilla-datatables` (como FlowStock) | Ya probado con `getData` + `can` y con modales de FlowStock | El markup/clases no son los del tema; requiere CSS extra |
 | C. `simple-datatables` | Librería madura con más features | Suma otro paquete y otro CSS |
 
 > Con las tres opciones el backend es idéntico: endpoint `GET …/data` que devuelve `{ data, can }`. La decisión es **solo de renderizado**.
 
-### 12.2 Decisión pendiente — iconos
+### 12.2 Decisión adoptada — iconos
+
+> **ADOPTADO (2026-09-12): Opción A — Tabler directo (`<i class="ti ti-*">`).** Sin `iconify` y sin dependencia JS adicional. `menu.icono` guardará valores `ti ti-*`.
 
 | Opción | Ventajas | Desventajas |
 |---|---|---|
-| **A. Tabler directo `<i class="ti ti-*">`** (recomendada) | Nativo del tema, sin JS extra, menos peso | `menu.icono` guarda valores `ti ti-*`; si algún día se cambia de tema hay que migrar las filas |
+| **A. Tabler directo `<i class="ti ti-*">`** *(adoptada)* | Nativo del tema, sin JS extra, menos peso | `menu.icono` guarda valores `ti ti-*`; si algún día se cambia de tema hay que migrar las filas |
 | B. Mantener `iconify` (`tabler:*`, `solar:*`) | Flexibilidad: se cambia el icono sin tocar el HTML; compatible con lo ya sembrado en FlowStock | Carga una dependencia JS adicional (`iconify-icon`) |
 
 ---
