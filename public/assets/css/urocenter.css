@@ -1,0 +1,74 @@
+/* ==========================================================================
+   Clínica UroCenter — Overrides del tema Dreams EMR
+   Todo ajuste visual del proyecto debe ir AQUÍ, no en assets/css/style.css
+   (ese archivo es del vendor y se reemplaza cuando el tema se actualiza).
+   ========================================================================== */
+
+/* --- Contenedor de contenido --- */
+.content {
+    padding: 1.25rem 1.25rem 0;
+}
+
+/* --- Encabezado de página (breadcrumb + título) --- */
+.page-head {
+    margin-bottom: 1rem;
+}
+
+.page-head .page-head-title {
+    font-size: 1.125rem;
+    font-weight: 600;
+    margin-bottom: 0;
+}
+
+.page-head .page-head-subtitle {
+    font-size: 0.8125rem;
+    color: var(--bs-secondary-color);
+    margin-bottom: 0;
+    margin-top: 0.25rem;
+}
+
+/* --- Tarjetas de contenido --- */
+.card-title {
+    font-size: 1rem;
+}
+
+/* --- Tabla remota (estructura compatible con datatable-vanilla.js del tema) --- */
+.urocenter-table-wrapper .dataTables_length,
+.urocenter-table-wrapper .dataTables_filter {
+    margin-bottom: 0.75rem;
+}
+
+.urocenter-table-wrapper .dataTables_info {
+    padding-top: 0.35rem;
+    color: var(--bs-secondary-color);
+    font-size: 0.8125rem;
+}
+
+/* --- Acciones dentro de tabla --- */
+.table-actions {
+    display: inline-flex;
+    gap: 0.25rem;
+    justify-content: center;
+}
+
+.table-actions .btn {
+    --bs-btn-padding-y: 0.125rem;
+    --bs-btn-padding-x: 0.375rem;
+    --bs-btn-font-size: 0.8125rem;
+}
+
+/* --- Campos de formulario con error de validación (422) --- */
+.is-invalid + .invalid-feedback,
+.invalid-feedback.d-block {
+    display: block;
+}
+
+/* --- Alertas de sesión --- */
+.content > .alert:first-child {
+    margin-bottom: 1rem;
+}
+
+/* --- Sidebar: nodo activo con hijos --- */
+.sidebar-menu ul li.submenu.active > a {
+    color: var(--bs-primary);
+}

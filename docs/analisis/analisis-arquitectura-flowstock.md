@@ -112,7 +112,7 @@ FlowStock es un ERP-ligero en **Laravel 12 + Blade puro + AJAX** cuya **base té
 | Tailwind | **No se adopta** (el tema ya trae su CSS) |
 | Vite | Se mantiene **solo** para CSS/JS propios del proyecto |
 | Paquetes a instalar | `diglactic/laravel-breadcrumbs`, `laravel-lang/common` (dev) + los dev que se quieran conservar |
-| BD | MySQL 8, `db_clinicaurocenter` |
+| BD | MySQL 8, base de datos `clinica_urocenter` |
 
 ---
 
@@ -823,7 +823,7 @@ POST <urlBase>/{id}/toggle     → activar/desactivar
 |---|---|---|
 | 1 | Verificar entorno | PHP ≥ 8.2, Composer, Node, MySQL 8 en Laragon; crear el host virtual `clinicaurocenter.test` |
 | 2 | Instalar Laravel 12 | La carpeta ya contiene `docs/` y `.git` ⇒ **crear el proyecto en una carpeta temporal** y mover el contenido a `c:\laragon\www\clinicaurocenter` (mismo procedimiento usado con el clone del repo), sin borrar `docs/` ni `.git` |
-| 3 | `.env` | `APP_NAME="Clínica UroCenter"`, `APP_URL=http://clinicaurocenter.test`, `APP_LOCALE=es`, `APP_FALLBACK_LOCALE=es`, `APP_FAKER_LOCALE=es_PE`, `DB_DATABASE=db_clinicaurocenter`, `SESSION_DRIVER=database`, `CACHE_STORE=database`, `QUEUE_CONNECTION=database` |
+| 3 | `.env` | `APP_NAME="Clínica UroCenter"`, `APP_URL=http://clinicaurocenter.test`, `APP_LOCALE=es`, `APP_FALLBACK_LOCALE=es`, `APP_FAKER_LOCALE=es_PE`, `DB_DATABASE=clinica_urocenter`, `SESSION_DRIVER=database`, `CACHE_STORE=database`, `QUEUE_CONNECTION=database` |
 | 4 | Dependencias | `composer require diglactic/laravel-breadcrumbs`; conservar `laravel/pint`, `phpunit`, `collision`; `npm install` |
 | 5 | Assets del tema | Copiar `dreamsemr/html/assets/**` → `public/assets/**` (css, js, plugins, img, fonts); añadir `public/assets/css/urocenter.css` para overrides |
 | 6 | Vistas base | `layouts/app.blade.php`, `layouts/guest.blade.php`, `components/layouts/{sidebar,topbar,footer}.blade.php` a partir de `dreamsemr/html/index.html` |
@@ -858,16 +858,16 @@ POST <urlBase>/{id}/toggle     → activar/desactivar
 | **D5** | `unique(..., 'peril_menu_permiso_unique')` — nombre mal escrito | Cosmético; afecta a `down()` y a diagnósticos | Nombrar correctamente los constraints |
 | **D6** | `perfiles.permisos` (json) legado: la migración 14 solo lo limpia, no lo elimina; y la migración 12 lo deja nullable | Confusión sobre dónde vive la verdad de los permisos | Eliminar la columna en UroCenter |
 | **D7** | `users.perfil_id` (legado) convive con `perfil_user` (M:M); `UsuarioController` hace `sync([$request->perfil_id])` (siempre **un** perfil) | Inconsistencia conceptual | Definir una sola fuente: M:M con `perfil_user`, o 1:N con `users.perfil_id` |
-| **D8** | Superadmin por `id === 1` o `perfil_id == 1` | Frágil ante re-siembra; no es configurable | Campo `es_superadmin` o perfil con `codigo` único |
+| **D8** | Superadmin por `id === 1` o `perfil_id == 1` | Frágil ante re-siembra; no es configurable | **Resuelto**: columna `perfiles.es_superadmin` + `User::esSuperadmin()` (y el superadmin recibe el árbol completo de menús) |
 | **D9** | `MenuSeeder` hace `truncate` + `SET FOREIGN_KEY_CHECKS=0` | Destructivo si se ejecuta en producción (borra permisos por cascade) | Seeder **idempotente** con `updateOrCreate` |
 | **D10** | `.env` con `APP_NAME=Laravel` | Nombre incorrecto en correos/títulos | `APP_NAME="Clínica UroCenter"` |
 | **D11** | `getData()` usa `->get()` sin paginación en servidor | Degrada con miles de registros (pacientes, ventas) | Paginación/`serverSide` + `parametros` de paginación |
-| **D12** | Recarga de sesión RBAC en cada request (~4–5 queries) | Coste por petición | Ver §9.5 (opción A) |
-| **D13** | Sin tests (solo scaffold en `tests/`) | Refactors peligrosos | Cubrir: login, 403 por permiso, menú por perfil, CRUD base |
-| **D14** | Credenciales demo en el seeder (`test@example.com` / `shush`) | Riesgo de seguridad | Seeder de admin leyendo variables de entorno o comando `artisan` |
+| **D12** | Recarga de sesión RBAC en cada request (~4–5 queries) | Coste por petición | **Resuelto**: versión RBAC en caché — si no cambió, la sesión no se reconstruye (§9.5 opción A) |
+| **D13** | Sin tests (solo scaffold en `tests/`) | Refactors peligrosos | **Resuelto**: `tests/Feature/KitBaseTest.php` (login, contexto RBAC, 403, 422 y CRUD completo) sobre SQLite en memoria |
+| **D14** | Credenciales demo en el seeder (`test@example.com` / `shush`) | Riesgo de seguridad | **Resuelto**: `UROCENTER_ADMIN_EMAIL` / `UROCENTER_ADMIN_PASSWORD`; si no se define, se genera una contraseña aleatoria y se muestra una sola vez |
 | **D15** | Iconos `solar:*` guardados en `menu.icono` (dependen de `iconify`) | Acoplamiento BD↔librería de iconos | **Resuelto**: UroCenter adopta Tabler (`ti ti-*`); al sembrar el menú se guardan valores Tabler y no se carga `iconify` |
 | **D16** | Vite + Tailwind configurados pero sin uso real | Confusión y peso | En UroCenter: Vite sin Tailwind, solo JS/CSS propio |
-| **D17** | `PersonalRequest` **no se usa** (el controlador valida con `Request` inline); `Pais/Departamento/Provincia/Distrito/Usuario` validan solo en `store()`, no en `update()` | Código muerto y validación inconsistente entre crear y editar | Un Form Request por entidad, usado en `store()` **y** `update()` |
+| **D17** | `PersonalRequest` **no se usa** (el controlador valida con `Request` inline); `Pais/Departamento/Provincia/Distrito/Usuario` validan solo en `store()`, no en `update()` | Código muerto y validación inconsistente entre crear y editar | **Resuelto**: `EmpresaRequest` se usa en `store()` **y** `update()` (patrón a replicar) |
 
 ---
 

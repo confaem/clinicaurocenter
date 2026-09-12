@@ -48,6 +48,7 @@ docs/
 | 8 | **Documentación** | Los análisis van en `docs/analisis/` sin numeración |
 | 9 | **Librería de tablas** | **`datatable-vanilla.js` de Dreams EMR**, alimentado por el endpoint `getData` → `{data, can}` de FlowStock. Se usa el CSS `dataTables.bootstrap5.min.css` del tema; **no** se carga `jquery.dataTables.min.js` |
 | 10 | **Iconos** | **Tabler directo** (`<i class="ti ti-*">`), sin `iconify`. `menu.icono` guardará valores `ti ti-*` |
+| 11 | **Base de datos** | **`clinica_urocenter`** (MySQL 8, Laragon `mysql-8.4.3`) · usuario `root`, sin contraseña en local |
 
 ---
 
@@ -61,11 +62,56 @@ docs/
 
 ---
 
+## Estado de la instalación (2026-09-12)
+
+Kit base **instalado y verificado** sobre Laravel 12.69.2 (PHP 8.3.30) y MySQL 8.4.3.
+
+| Pieza | Estado |
+|---|---|
+| Proyecto Laravel 12 (`composer create-project`) | ✅ Instalado en `clinicaurocenter/` |
+| Base de datos | ✅ `clinica_urocenter` (utf8mb4 / utf8mb4_unicode_ci) |
+| `.env` | ✅ `APP_NAME="Clínica UroCenter"`, `APP_URL=http://clinicaurocenter.test`, locale `es`, `APP_TIMEZONE=America/Lima`, SESSION/CACHE/QUEUE en BD |
+| Paquetes | ✅ `diglactic/laravel-breadcrumbs ^10.0`, `laravel-lang/common` (dev) + traducciones `lang/es` |
+| Assets del tema | ✅ `dreamsemr/html/assets/**` → `public/assets/**` (51,6 MB) · SCSS fuente en `resources/theme-scss/` |
+| Layouts Blade | ✅ `layouts/app`, `layouts/guest`, `components/layouts/{topbar,sidebar,footer}` |
+| JS/CSS propios | ✅ `public/assets/js/urocenter.js` (DataTable remoto sin jQuery) y `public/assets/css/urocenter.css` |
+| Autenticación propia | ✅ `AuthController` (throttle 5 intentos, `session()->regenerate()`, logout seguro) |
+| Núcleo RBAC | ✅ `PermisoHelper`, `SessionDataService`, `HandleSessionData`, `@can_do`, `User::tienePermiso/permisosPorMenu/esSuperadmin` |
+| Migraciones | ✅ 7 nuevas (RBAC, ubigeo, personal, empresa, parámetros, terminal, campos RBAC en `users`) registradas en `AppServiceProvider` |
+| Seeders | ✅ Permisos (9), Perfiles (6), Menú (bloques PRINCIPAL/CLINICO/COMERCIAL/ADMIN/REPORTES), Usuario admin, Ubigeo (1833 distritos) |
+| CRUD de referencia | ✅ `Configuracion/EmpresaController` + `EmpresaRequest` + vista con DataTable remoto, modal y SweetAlert2 |
+| Breadcrumbs | ✅ `routes/breadcrumbs.php` (dashboard, configuración, empresa) |
+| Pruebas | ✅ `tests/Feature/KitBaseTest.php` — **12 pruebas / 63 aserciones**, sobre SQLite en memoria |
+
+### Deudas del análisis cerradas en esta instalación
+
+| Deuda | Cómo se resolvió |
+|---|---|
+| **D1** migraciones de dominio no registradas | Todas las carpetas se registran con `loadMigrationsFrom()`; validado con `migrate` limpio y `RefreshDatabase` |
+| **D2** rutas `update`/`toggle` mal enlazadas | El contrato CRUD se implementó completo en `EmpresaController` |
+| **D8** superadmin por `id === 1` | `perfiles.es_superadmin` + `User::esSuperadmin()`; además el superadmin recibe el **árbol completo** de menús |
+| **D9** `MenuSeeder` destructivo | `MenuSeeder` idempotente con `updateOrCreate` (sin `truncate`) |
+| **D12** RBAC recargado en cada request | Versión RBAC en caché (`SessionDataService::VERSION_KEY`): si no cambió, no se repiten consultas |
+| **D13** sin pruebas | `KitBaseTest` cubre login, RBAC, 403, 422 y CRUD completo |
+| **D14** credenciales fijas en el seeder | `UROCENTER_ADMIN_EMAIL` / `UROCENTER_ADMIN_PASSWORD`; si no se define, se genera aleatoria y se muestra una vez |
+| **D17** Form Request sin usar | Un `EmpresaRequest` usado en `store()` **y** `update()` |
+| **M1** superadmin hardcodeado | Igual que D8 |
+
+### Entorno local (Laragon)
+
+- **DocumentRoot**: los auto virtual hosts de Laragon apuntan a la raíz del proyecto, pero Laravel debe servirse desde `public/`.
+  Editar `c:\laragon\etc\apache2\sites-enabled\auto.clinicaurocenter.test.conf` y dejar `DocumentRoot "C:/laragon/www/clinicaurocenter/public"`, luego **Reload** en Laragon.
+- Alternativa sin tocar Apache: `php artisan serve --port=8123` (los assets usan el host de la petición, así que el tema carga igual).
+- `php artisan storage:link` ya ejecutado (logos de empresa en `public/storage`).
+
+---
+
 ## Próximos pasos
 
 1. ~~Resolver P1, P2 y P3~~ (cerradas — ver "Decisiones cerradas").
-2. Instalar el kit (§15 de [Doc B](analisis-arquitectura-flowstock.md#15-kit-de-inicio-propuesto-preludio-de-la-instalación)).
-3. Elaborar el **Doc 02 — Modelo de entidades** y luego el **Doc 03 — Modelo relacional MySQL 8**.
+2. ~~Instalar el kit~~ (completado — ver "Estado de la instalación").
+3. Implementar los módulos ADMIN (Usuarios, Perfiles, Permisos, Menús) y el resto de Configuración (Parámetros, Terminales, Personal, Ubigeo).
+4. Elaborar el **Doc 02 — Modelo de entidades** y luego el **Doc 03 — Modelo relacional MySQL 8**.
 4. Generar las migraciones Laravel 12 a partir del doc 03.
 
 ---
