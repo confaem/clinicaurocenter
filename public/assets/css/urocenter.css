@@ -73,6 +73,43 @@
     color: var(--bs-primary);
 }
 
+/* --- Marca (logo) ---
+   Fuente única: config/urocenter.php → componentes/brand/logo.blade.php
+   Los archivos finales viven en public/assets/img/brand/ y se generan con
+   `php scripts/generar-marca.php`. */
+.brand-logo {
+    height: 34px;
+    width: auto;
+}
+
+.brand-logo-lg {
+    height: 88px;
+}
+
+/* El logo entregado es un JPG con fondo claro: se muestra sobre una píldora
+   blanca para que se vea correcto con el tema oscuro y el sidebar oscuro. */
+.brand-chip {
+    display: inline-flex;
+    align-items: center;
+    background: #fff;
+    border-radius: 0.5rem;
+    padding: 0.25rem 0.5rem;
+    box-shadow: 0 1px 2px rgba(15, 23, 42, 0.08);
+}
+
+.sidebar-logo .brand-logo {
+    height: 36px;
+}
+
+.sidebar-logo .brand-chip {
+    padding: 0.3rem 0.55rem;
+}
+
+/* Sidebar colapsado: solo el símbolo */
+.logo-small .brand-logo {
+    height: 30px;
+}
+
 /* --- Panel "Theme Customizer" de demostración del tema ---
    No se usa en UroCenter (sus imágenes de vista previa usan rutas relativas
    que fallan en rutas profundas como /configuracion/empresa).

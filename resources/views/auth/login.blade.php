@@ -10,9 +10,9 @@
             <div class="card border-1 p-lg-3 shadow-md rounded-3 m-0">
                 <div class="card-body">
 
-                    <div class="mb-4">
+                    <div class="mb-4 text-center">
                         <a href="{{ url('/') }}">
-                            <img src="{{ asset('assets/img/logo-dark.svg') }}" class="img-fluid logo m-atuo" alt="{{ config('app.name') }}">
+                            <x-brand.logo variante="vertical" clase="brand-logo brand-logo-lg" :con-chip="false" />
                         </a>
                     </div>
 

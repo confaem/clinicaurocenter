@@ -97,6 +97,29 @@ Kit base **instalado y verificado** sobre Laravel 12.69.2 (PHP 8.3.30) y MySQL 8
 | **D17** Form Request sin usar | Un `EmpresaRequest` usado en `store()` **y** `update()` |
 | **M1** superadmin hardcodeado | Igual que D8 |
 
+### Marca (logo)
+
+Los recursos de marca viven en `public/assets/img/brand/` y se generan desde los originales:
+
+```text
+public/assets/img/brand/
+├── logo-horizontal.png     900x206   topbar, sidebar expandido y panel
+├── logo-vertical.png       269x178   pantalla de acceso, documentos e impresión
+├── logo-icono.png          512x423   solo el símbolo (PNG con transparencia)
+├── favicon.png              64x64
+├── apple-icon.png          180x180
+├── origen-cliente/         originales entregados (LOGO1.jpg, LOGO2.jpg, LOGO3.jpeg, logo.png, logo.jpeg, favicon.ico)
+└── origen-tema/            logos originales de Dreams EMR (respaldo para revertir)
+```
+
+- **Generación**: `php scripts/generar-marca.php` — recorta el fondo claro de los JPG, escala y aplana sobre blanco; el símbolo conserva su transparencia.
+- **Única fuente de verdad**: `config/urocenter.php` (clave `marca`) consumida por el componente Blade `<x-brand.logo variante="horizontal|vertical|icono" />`.
+- **Cómo cambiar el logo**: reemplazar los archivos de `brand/` conservando los nombres, o colocar el nuevo original en `origen-cliente/` y volver a ejecutar el script.
+- El logo entregado es un JPG con fondo claro, por lo que se presenta sobre una "píldora" blanca (`.brand-chip`) para que se vea correcto también con el tema oscuro.
+- El panel *Theme Customizer* de demostración del tema está desactivado (sus imágenes de vista previa usaban rutas relativas).
+
+Pendiente: reemplazar el logo cuando el cliente entregue una versión **SVG o PNG con transparencia** (permitiría prescindir de la píldora blanca).
+
 ### Entorno local (Laragon)
 
 - **DocumentRoot**: los auto virtual hosts de Laragon apuntan a la raíz del proyecto, pero Laravel debe servirse desde `public/`.
@@ -127,6 +150,7 @@ Kit base **instalado y verificado** sobre Laravel 12.69.2 (PHP 8.3.30) y MySQL 8
 | H5 | `MenuSeeder` usa `truncate` + `SET FOREIGN_KEY_CHECKS=0` (destructivo) | Doc B §16 D9 |
 | H6 | El layout de Dreams EMR está **duplicado en 152 HTML** (sin partials) ⇒ conversión manual a Blade | Doc A §3.3 y §11 |
 | H7 | Dreams EMR **no trae** POS, inventario/almacén, compras, caja ni CIE-10 | Doc A §10 |
+| H8 | Las layouts apuntaban a los logos del tema (`img/logo.svg`, `img/favicon.png`); al reemplazarlos por la marca del cliente había **imágenes rotas** | Resuelto: recursos en `img/brand/`, componente `<x-brand.logo>` y pruebas que verifican su existencia |
 
 ---
 

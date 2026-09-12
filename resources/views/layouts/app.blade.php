@@ -9,8 +9,8 @@
     {{-- Token CSRF: obligatorio para las peticiones AJAX --}}
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
-    <link rel="shortcut icon" href="{{ asset('assets/img/favicon.png') }}">
-    <link rel="apple-touch-icon" href="{{ asset('assets/img/apple-icon.png') }}">
+    <link rel="icon" type="image/png" href="{{ asset(config('urocenter.marca.favicon')) }}">
+    <link rel="apple-touch-icon" href="{{ asset(config('urocenter.marca.apple')) }}">
 
     {{-- Theme config JS: debe cargarse ANTES del CSS para evitar el parpadeo de tema (FOUC) --}}
     <script src="{{ asset('assets/js/theme-script.js') }}"></script>

@@ -26,14 +26,14 @@
     {{-- ===================== Logo ===================== --}}
     <div class="sidebar-logo">
         <div>
-            <a href="{{ route('dashboard') }}" class="logo logo-normal">
-                <img src="{{ asset('assets/img/logo.svg') }}" alt="{{ config('app.name') }}">
+            <a href="{{ route('dashboard') }}" class="logo logo-normal" aria-label="{{ config('app.name') }}">
+                <x-brand.logo variante="horizontal" clase="brand-logo" />
             </a>
-            <a href="{{ route('dashboard') }}" class="logo-small">
-                <img src="{{ asset('assets/img/logo-small.svg') }}" alt="{{ config('app.name') }}">
+            <a href="{{ route('dashboard') }}" class="logo-small" aria-label="{{ config('app.name') }}">
+                <x-brand.logo variante="icono" clase="brand-logo" :con-chip="false" />
             </a>
-            <a href="{{ route('dashboard') }}" class="dark-logo">
-                <img src="{{ asset('assets/img/logo-dark.svg') }}" alt="{{ config('app.name') }}">
+            <a href="{{ route('dashboard') }}" class="dark-logo" aria-label="{{ config('app.name') }}">
+                <x-brand.logo variante="horizontal" clase="brand-logo" />
             </a>
         </div>
         <button class="sidenav-toggle-btn btn border-0 p-0 active" id="toggle_btn" type="button" aria-label="Contraer menú">

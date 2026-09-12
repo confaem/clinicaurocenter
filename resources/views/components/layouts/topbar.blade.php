@@ -11,15 +11,15 @@
                 <i class="ti ti-menu-deep fs-24"></i>
             </a>
 
-            <a href="{{ route('dashboard') }}" class="logo">
+            <a href="{{ route('dashboard') }}" class="logo" aria-label="{{ config('app.name') }}">
                 <span class="logo-light">
-                    <span class="logo-lg"><img src="{{ asset('assets/img/logo.svg') }}" alt="{{ config('app.name') }}"></span>
+                    <x-brand.logo variante="horizontal" clase="brand-logo" />
                 </span>
                 <span class="logo-dark">
-                    <span class="logo-lg"><img src="{{ asset('assets/img/logo-dark.svg') }}" alt="{{ config('app.name') }}"></span>
+                    <x-brand.logo variante="horizontal" clase="brand-logo" />
                 </span>
                 <span class="logo-small">
-                    <span class="logo-lg"><img src="{{ asset('assets/img/logo-small.svg') }}" alt="{{ config('app.name') }}"></span>
+                    <x-brand.logo variante="icono" clase="brand-logo" :con-chip="false" />
                 </span>
             </a>
 

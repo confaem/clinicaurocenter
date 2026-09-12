@@ -107,6 +107,38 @@ class KitBaseTest extends TestCase
             ->assertSee('Ingresar');
     }
 
+    /* ------------------------------------------------------------------ *
+     * Marca (logo)
+     * ------------------------------------------------------------------ */
+
+    public function test_los_archivos_de_marca_existen(): void
+    {
+        foreach (['horizontal', 'vertical', 'icono', 'favicon', 'apple'] as $clave) {
+            $ruta = public_path(config('urocenter.marca.' . $clave));
+
+            $this->assertFileExists($ruta, "Falta el recurso de marca '{$clave}' en {$ruta}");
+        }
+    }
+
+    public function test_la_marca_se_renderiza_en_el_login_y_en_el_panel(): void
+    {
+        $this->sembrarCatalogos();
+
+        // Pantalla de acceso: logo vertical + favicon
+        $this->get('/login')
+            ->assertOk()
+            ->assertSee(config('urocenter.marca.vertical'), false)
+            ->assertSee(config('urocenter.marca.favicon'), false);
+
+        // Panel autenticado: logo horizontal (topbar/sidebar) e icono para el sidebar colapsado
+        $usuario = $this->crearUsuario(Perfil::where('nombre', 'Administrador')->first());
+
+        $this->actingAs($usuario)->get('/dashboard')
+            ->assertOk()
+            ->assertSee(config('urocenter.marca.horizontal'), false)
+            ->assertSee(config('urocenter.marca.icono'), false);
+    }
+
     public function test_un_usuario_puede_iniciar_sesion_y_llega_al_dashboard(): void
     {
         $this->sembrarCatalogos();
