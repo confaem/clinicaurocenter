@@ -364,4 +364,17 @@
     };
 
     window.Urocenter = Urocenter;
+
+    /* ------------------------------------------------------------------ *
+     * Limpieza de elementos de demostración del tema
+     * ------------------------------------------------------------------ */
+
+    document.addEventListener('DOMContentLoaded', function () {
+        // El tema inyecta un panel "Theme Customizer" (demostración) con imágenes
+        // de vista previa en rutas relativas, que fallan en rutas profundas.
+        // No se usa en UroCenter: se retira del DOM.
+        document.querySelectorAll('.toggle-theme, #theme-settings-offcanvas').forEach(function (elemento) {
+            elemento.remove();
+        });
+    });
 })(window, document);

@@ -72,3 +72,11 @@
 .sidebar-menu ul li.submenu.active > a {
     color: var(--bs-primary);
 }
+
+/* --- Panel "Theme Customizer" de demostración del tema ---
+   No se usa en UroCenter (sus imágenes de vista previa usan rutas relativas
+   que fallan en rutas profundas como /configuracion/empresa).
+   Se elimina también desde public/assets/js/urocenter.js. */
+.toggle-theme {
+    display: none !important;
+}
